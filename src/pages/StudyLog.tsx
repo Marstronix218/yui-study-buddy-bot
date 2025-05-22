@@ -1,70 +1,22 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Layout from "@/components/Layout";
-import { StudySession, StudyGoal } from "@/utils/studyTimer";
+import { useStudyTimer } from "@/shared/studyTimerLogic";
 
 const StudyLog = () => {
-  const [isStudying, setIsStudying] = useState(false);
-  const [currentSession, setCurrentSession] = useState<StudySession | null>(null);
-  const [studyGoal, setStudyGoal] = useState<StudyGoal>({
-    targetHours: 2,
-    completedMinutes: 0
-  });
-  const [todaySessions, setTodaySessions] = useState<StudySession[]>([]);
-
-  useEffect(() => {
-    // In a real app, we would load the study data from localStorage or a backend
-    const savedCompletedMinutes = 90; // For example: 1.5 hours = 90 minutes
-    
-    setStudyGoal(prev => ({
-      ...prev,
-      completedMinutes: savedCompletedMinutes
-    }));
-  }, []);
-
-  const startStudying = () => {
-    const newSession: StudySession = {
-      startTime: new Date()
-    };
-    setCurrentSession(newSession);
-    setIsStudying(true);
-  };
-
-  const stopStudying = () => {
-    if (currentSession) {
-      const endTime = new Date();
-      const updatedSession: StudySession = {
-        ...currentSession,
-        endTime,
-        duration: Math.round((endTime.getTime() - currentSession.startTime.getTime()) / 60000) // Convert to minutes
-      };
-      
-      setTodaySessions(prev => [...prev, updatedSession]);
-      
-      // Update completed minutes
-      setStudyGoal(prev => ({
-        ...prev,
-        completedMinutes: prev.completedMinutes + (updatedSession.duration || 0)
-      }));
-      
-      setCurrentSession(null);
-      setIsStudying(false);
-    }
-  };
-
-  const formatTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}時間${mins > 0 ? ` ${mins}分` : ''}`;
-  };
-
-  const calculateProgress = () => {
-    const targetMinutes = studyGoal.targetHours * 60;
-    return Math.min(Math.round((studyGoal.completedMinutes / targetMinutes) * 100), 100);
-  };
+  const {
+    isStudying,
+    currentSession,
+    studyGoal,
+    todaySessions,
+    startStudying,
+    stopStudying,
+    calculateProgress,
+    formatTime
+  } = useStudyTimer();
 
   return (
     <Layout>

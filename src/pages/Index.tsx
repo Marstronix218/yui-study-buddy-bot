@@ -1,17 +1,16 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { characters } from "@/data/characters";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
+import { characters } from "@/shared/characterData";
 
 const Index = () => {
   const navigate = useNavigate();
 
   const handleSelectCharacter = (characterId: string) => {
-    // In a real app, we would store the selection in state or localStorage
     localStorage.setItem("selectedCharacter", characterId);
     navigate("/chat");
   };
