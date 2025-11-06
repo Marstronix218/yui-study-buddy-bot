@@ -1,73 +1,100 @@
-# Welcome to your Lovable project
+# YUI – Study Buddy
 
-## Project info
+An opinionated Vite + React + TypeScript app with a simple Node/Express API that powers an AI study companion. Pick a character, chat for guidance, and track your study sessions.
 
-**URL**: https://lovable.dev/projects/96219619-c014-4652-ae60-acdb142622d2
+## Tech stack
 
-## How can I edit this code?
+- React 18 + Vite 5 (TypeScript)
+- Tailwind CSS + shadcn/ui (Radix UI primitives)
+- TanStack Query for data fetching/state
+- Express server for the chat API
 
-There are several ways of editing your application.
+## Requirements
 
-**Use Lovable**
+- Node.js 18+ and npm
+- An OpenAI API key
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/96219619-c014-4652-ae60-acdb142622d2) and start prompting.
+## Getting started
 
-Changes made via Lovable will be committed automatically to this repo.
+1) Install dependencies
 
-**Use your preferred IDE**
+```bash
+npm install
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+2) Configure environment variables
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Create a file named `.env.local` in the project root:
 
-Follow these steps:
+```ini
+# Required by the local API server
+OPENAI_API_KEY=your_openai_api_key
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Optional (defaults to 3000)
+PORT=3000
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3) Run the app (two terminals)
 
-# Step 3: Install the necessary dependencies.
-npm i
+- Terminal A – start the API server:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm run server
+```
+
+- Terminal B – start the frontend dev server:
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Frontend: http://localhost:8080  (proxied API at /api → http://localhost:3000)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Available scripts
 
-**Use GitHub Codespaces**
+- `npm run dev` — start Vite dev server
+- `npm run build` — production build
+- `npm run build:dev` — development-mode build (useful for debugging bundles)
+- `npm run preview` — preview the production build locally (run API separately)
+- `npm run server` — start the local Express API (`server.ts`)
+- `npm run lint` — run ESLint
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project structure
 
-## What technologies are used for this project?
+```
+src/
+	pages/            # Views: Index (character select), Chat, StudyLog
+	shared/           # Shared logic (API client, chat logic, timer)
+	components/       # UI components (shadcn/ui)
+server.ts           # Express chat API (OpenAI-backed)
+vite.config.ts      # Vite config with /api proxy → :3000
+```
 
-This project is built with:
+## Development notes
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- The frontend calls `POST /api/chat`; Vite proxies that to the local API server.
+- The API requires `OPENAI_API_KEY` and will read it from `.env.local`.
+- When using `npm run preview` or deploying the built frontend, make sure the API is hosted and the client can reach it at the same path or adjust the base URL accordingly.
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/96219619-c014-4652-ae60-acdb142622d2) and click on Share -> Publish.
+You can deploy the frontend as static assets (e.g., Netlify, Vercel static) and run the Node API separately (e.g., a small VM, Render, Fly.io). Ensure the frontend points its `/api` calls to your API domain or configure an edge proxy.
 
-## Can I connect a custom domain to my Lovable project?
+High-level steps:
 
-Yes, you can!
+1) Build the frontend:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+npm run build
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+2) Host the contents of `dist/` on your static host.
+
+3) Deploy the Node API (from `server.ts`) on your preferred Node host with `OPENAI_API_KEY` set. Expose it at e.g. `https://api.example.com`, and either:
+
+- Serve the API under the same origin as the frontend (recommended), or
+- Configure the frontend host to proxy `/api` to your API origin.
+
+## License
+
+This project is provided as-is; add your preferred license if needed.
