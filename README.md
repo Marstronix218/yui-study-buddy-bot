@@ -94,7 +94,3 @@ npm run build
 
 - Serve the API under the same origin as the frontend (recommended), or
 - Configure the frontend host to proxy `/api` to your API origin.
-
-## License
-
-This project is provided as-is; add your preferred license if needed.
